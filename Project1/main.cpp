@@ -209,6 +209,15 @@ void processRegularKey(unsigned char key, int xx, int yy) {
 			cubo_on = false;
 		}
 		break;
+
+	case 'M':
+	case 'm':
+		angleZ++;
+		angleY--;
+		angleX++;
+		
+		break;
+		
 	}
 	setVisParam();
 	glutPostRedisplay();
@@ -305,19 +314,24 @@ void render() {
 	cor("AMARELO");
 	if (cubo_on) {
 		get<1>(listaObjetos1).Desenha();
-		angleZ++;
-		angleY--;
-		angleX++;
 	}
 	
 	cor("VERMELHO");
-	if (cone_on) get<0>(listaObjetos1).Desenha();
+	if (cone_on) { 
+		get<0>(listaObjetos1).Desenha(); 
+	}
 	cor("VERDE");
-	if (tetraedo_on) get<3>(listaObjetos1).Desenha();
+	if (tetraedo_on) { 
+		get<3>(listaObjetos1).Desenha();
+	}
 	cor("AZUL");
-	if (disco_on) get<2>(listaObjetos1).Desenha();
+	if (disco_on) { 
+		get<2>(listaObjetos1).Desenha();
+	}
 	cor("CIANO");
-	if (objOpenGl_on) glutSolidTeapot(50.00);
+	if (objOpenGl_on) { 
+		glutSolidTeapot(50.00);
+	}
 
 	
 
@@ -332,9 +346,9 @@ int main(int argc, char** argv) {
 	glutCreateWindow(title);           // Create window with the given title
 	glutDisplayFunc(render);           // Register callback handler for window re-paint event
 	glutReshapeFunc(reshape);          // Register callback handler for window re-size event
-	//glutSpecialFunc(processSpecialKeys);  // Register callback handler for arrow keys 
+	glutSpecialFunc(processSpecialKeys);  // Register callback handler for arrow keys 
 	glutKeyboardFunc(processRegularKey);
-	//glutMouseFunc(mouse);
+	glutMouseFunc(mouse);
 
 	initGL();                           // Our own OpenGL initialization
 
