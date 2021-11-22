@@ -214,6 +214,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Casa3d.cpp" />
     <ClCompile Include="Cone.cpp" />
     <ClCompile Include="Cubo.cpp" />
     <ClCompile Include="Disco.cpp" />
@@ -224,6 +225,7 @@
     <ClCompile Include="Vetor.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Casa3d.h" />
     <ClInclude Include="Cone.h" />
     <ClInclude Include="Cubo.h" />
     <ClInclude Include="Disco.h" />

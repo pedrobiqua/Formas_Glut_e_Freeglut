@@ -5,6 +5,7 @@
 #include <iostream>		  // for "cout <<" 
 #include <string>
 #include <tuple> //Utilizei a tupla para listar os objetos
+#include <fstream>
 
 #include "Triangle.h"
 #include "TetraHedro.h"
@@ -13,16 +14,18 @@
 #include "Disco.h"
 #include "Cone.h"
 #include "Vetor.h"
+#include "Casa3d.h"
 
 
 using namespace std;
 
-char title[] = "Trabalho TDE- Pedro Bianchini de Quadros";
+char title[] = "Trabalho TDE- EQUIPE LLPT";
 
 static int menu_id;
 static int submenu_id;
 static int value = 0;
 static int window;
+int resolution = 24;
 
 
 boolean grid_on = true;
@@ -45,12 +48,40 @@ GLfloat zCut = 0.0f;
 
 GLfloat posicaoLuz[4] = { 0.0, 150.0, 500.0, 1.0 };
 
-Cubo cubo1(1, 0.0f, 0.0f, 0.0f, 50.0f);
-Disco disco1 (1, 10.0f, 10.0f, 50.0f, 50.0f);
-Cone cone1(1, 0.0f, 0.0f, 50.0f, 50.0f, 50.0f);
-TetraHedro tetrahedro1(1, 0.0f, 0.0f, 0.0f, 25.0f);
+Cubo cubo1(1, 0.0f, 0.0f, 0.0f, 50.0f); //1 
+Disco disco1 (1, 10.0f, 10.0f, 50.0f, 50.0f); //2
+Cone cone1(1, 0.0f, 0.0f, 50.0f, 50.0f, 50.0f); //3
+TetraHedro tetrahedro1(1, 0.0f, 0.0f, 0.0f, 50.0f); //4
+Casa3d casa1(0.0f, 0.0f, 0.0f, 25.0f, 0.0f, 20.0f, 0.0f, 25.0f);
+
+typedef struct objeto {
+	int id;
+	float dim1, dim2;
+	float x, y, z;
+	float r, g, b;
+};
+
+objeto ObjectList[20];
+int numObjects;
 
 listaObj listaObjetos1 = make_tuple(cone1, cubo1, disco1, tetrahedro1); //Armazenando Objetos na tupla
+
+void DisplayFileRead(const char* fileName)
+{
+	fstream inStream;
+	inStream.open(fileName, ios::in); // abre o arquivo
+	if (inStream.fail()) return;      //falha na abertura do arquivo
+	cout << "Abertura do arquivo com sucesso ..." << endl;
+	inStream >> numObjects;			  // lê primeira linha do arquivo, número de objetos 
+	cout << numObjects << " Objetos na cena ..." << endl;
+	for (int i = 1; i <= numObjects; i++) { // leitura das demais linhas, id dos objetos, dimensões, posição e cor
+		inStream >> ObjectList[i].id
+			>> ObjectList[i].dim1 >> ObjectList[i].dim2
+			>> ObjectList[i].x >> ObjectList[i].y >> ObjectList[i].z
+			>> ObjectList[i].r >> ObjectList[i].g >> ObjectList[i].b;
+	}
+	inStream.close();
+}
 
 void cor(std::string n_cor) {
 	if (n_cor == "BRANCO") glColor3f(1.0f, 1.0f, 1.0f); else
@@ -112,6 +143,8 @@ void processSpecialKeys(int key, int xx, int yy) {
 	case GLUT_KEY_PAGE_DOWN:
 		angleZ++;
 		break;
+	case GLUT_KEY_END:
+		DisplayFileRead("pedro.txt");
 	}
 	setVisParam();
 	glutPostRedisplay();
@@ -217,8 +250,16 @@ void processRegularKey(unsigned char key, int xx, int yy) {
 		angleX++;
 		
 		break;
-		
+	case 'k':
+	case 'K':
+		objOpenGl_on = false;
+		tetraedo_on = false;
+		disco_on = false;
+		cone_on = false;
+		cubo_on = false;
 	}
+	
+
 	setVisParam();
 	glutPostRedisplay();
 }
@@ -310,23 +351,63 @@ void render() {
 	glRotatef(angleX, 1.0f, 0.0f, 0.0f);
 	glRotatef(angleY, 0.0f, 1.0f, 0.0f);
 	glRotatef(angleZ, 0.0f, 0.0f, 1.0f);
+	if (grid_on) grid();
+
+	for (int i = 1; i <= numObjects; i++) {
+		switch (ObjectList[i].id) {
+		case 1: //cubo
+			cubo1.id = ObjectList[i].id;
+			cubo1.pcx = ObjectList[i].x;
+			cubo1.pcy = ObjectList[i].y;
+			cubo1.pcz = ObjectList[i].z;
+			cubo1.a = 50.0f;
+			break;
+
+		case 2: //disco
+			disco1.id = ObjectList[i].id;
+			disco1.pcx = ObjectList[i].x;
+			disco1.pcy = ObjectList[i].y;
+			disco1.pcz = ObjectList[i].z;
+			disco1.raio = 50.0f;
+			break;
+
+		case 3: //cone
+			cone1.id = ObjectList[i].id;
+			cone1.pcx = ObjectList[i].x;
+			cone1.pcy = ObjectList[i].y;
+			cone1.pcz = ObjectList[i].z;
+			cone1.raio = ObjectList[i].r;
+			cone1.H = 50.0f;
+			break;
+
+		case 4: //tetraedo
+			tetrahedro1.id = ObjectList[i].id;
+			tetrahedro1.pcx = ObjectList[i].x;
+			tetrahedro1.pcy = ObjectList[i].y;
+			tetrahedro1.pcz = ObjectList[i].z;
+			tetrahedro1.a = 50.0f;
+			break;
+		}
+	}
+
+	casa1.Desenha(1);
 
 	cor("AMARELO");
 	if (cubo_on) {
-		get<1>(listaObjetos1).Desenha();
+		cubo1.Desenha();
 	}
 	
 	cor("VERMELHO");
 	if (cone_on) { 
-		get<0>(listaObjetos1).Desenha(); 
+		cone1.Desenha();
 	}
 	cor("VERDE");
 	if (tetraedo_on) { 
-		get<3>(listaObjetos1).Desenha();
+		tetrahedro1.Desenha();
 	}
 	cor("AZUL");
 	if (disco_on) { 
-		get<2>(listaObjetos1).Desenha();
+		disco1.Desenha();
 	}
 	cor("CIANO");
 	if (objOpenGl_on) { 
@@ -339,6 +420,7 @@ void render() {
 }
 /* Main function: GLUT runs as a console application starting at main() */
 int main(int argc, char** argv) {
+	DisplayFileRead("pedro.txt");
 	glutInit(&argc, argv);             // Initialize GLUT
 	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGBA); // Define double buffered mode
 	glutInitWindowSize(640, 480);      // Set the window's initial width & height
@@ -379,7 +461,9 @@ int main(int argc, char** argv) {
 	cout << "Teclado: tecla Y Cone" << endl;
 	cout << "Teclado: tecla U Disco" << endl;
 	cout << "Teclado: tecla I Tetrahedro" << endl;
+	cout << "Teclado: tecla K - Desliga Objeto" << endl;
 
 	glutMainLoop();                 // Enter the infinite event-processing loop
 	return 0;
 }
+
