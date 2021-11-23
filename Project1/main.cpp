@@ -15,11 +15,25 @@
 #include "Cone.h"
 #include "Vetor.h"
 #include "Casa3d.h"
+#include "ObjetoLouco.h"
+
+/*
+Alunos:
+-Pedro Bianchini de Quadros
+-Lucca Libanori
+-Lukas Jacon Barboza
+-Thiago Krügel
+*/
 
 
 using namespace std;
 
-char title[] = "Trabalho TDE- EQUIPE LLPT";
+char title[] = "Trabalho TDE 3";
+
+//Movimentação
+
+Vetor posicao1(1, 0.0f, 0.0f, 0.0f);
+Vetor velocidade1(2, 1.5f, 2.1f, 1.0f);
 
 static int menu_id;
 static int submenu_id;
@@ -34,6 +48,7 @@ boolean cone_on = false;
 boolean disco_on = false;
 boolean tetraedo_on = false;
 boolean objOpenGl_on = false;
+boolean movimentacao_on = true;
 
 //Tupla
 typedef tuple<Cone, Cubo, Disco, TetraHedro> listaObj; //Criação da tupla
@@ -53,6 +68,8 @@ Disco disco1 (1, 10.0f, 10.0f, 50.0f, 50.0f); //2
 Cone cone1(1, 0.0f, 0.0f, 50.0f, 50.0f, 50.0f); //3
 TetraHedro tetrahedro1(1, 0.0f, 0.0f, 0.0f, 50.0f); //4
 Casa3d casa1(0.0f, 0.0f, 0.0f, 25.0f, 0.0f, 20.0f, 0.0f, 25.0f);
+Casa3d casa2(0.0f, 0.0f, 0.0f, 25.0f, 0.0f, 20.0f, 0.0f, 25.0f);
+ObjetoLouco objLouco;
 
 typedef struct objeto {
 	int id;
@@ -120,6 +137,43 @@ void reshape(GLsizei w, GLsizei h) {
 	// Calcula a correção de aspecto
 	fAspect = (GLfloat)w / (GLfloat)h;
 	setVisParam();
+}
+
+void cubo(float a, float xpos, float ypos, float zpos)    // Cubo posicionado em xpos, ypos, zpos
+{
+	glShadeModel(GL_FLAT);
+	glBegin(GL_TRIANGLE_STRIP);
+	glColor3f(1.0f, 0.0f, 0.0f); // red
+	glVertex3f(-a / 2 + xpos, a / 2 + ypos, a / 2 + zpos);
+	glVertex3f(-a / 2 + xpos, -a / 2 + ypos, a / 2 + zpos);
+	glColor3f(0.0f, 0.0f, 1.0f); // blue
+	glVertex3f(a / 2 + xpos, a / 2 + ypos, a / 2 + zpos);
+	glVertex3f(a / 2 + xpos, -a / 2 + ypos, a / 2 + zpos);
+	glColor3f(1.0f, 1.0f, 1.0f); // white
+	glVertex3f(a / 2 + xpos, a / 2 + ypos, -a / 2 + zpos);
+	glVertex3f(a / 2 + xpos, -a / 2 + ypos, -a / 2 + zpos);
+	glColor3f(1.0f, 1.0f, 0.0f); // magenta
+	glVertex3f(-a / 2 + xpos, a / 2 + ypos, -a / 2 + zpos);
+	glVertex3f(-a / 2 + xpos, -a / 2 + ypos, -a / 2 + zpos);
+	glColor3f(1.0f, 0.0f, 1.0f); // cyan
+	glVertex3f(-a / 2 + xpos, a / 2 + ypos, a / 2 + zpos);
+	glVertex3f(-a / 2 + xpos, -a / 2 + ypos, a / 2 + zpos);
+	glEnd();
+
+	glBegin(GL_TRIANGLE_STRIP);
+	glColor3f(0.5f, 0.5f, 0.5f); // grey
+	glVertex3f(-a / 2 + xpos, a / 2 + ypos, -a / 2 + zpos);
+	glVertex3f(-a / 2 + xpos, a / 2 + ypos, a / 2 + zpos);
+	glVertex3f(a / 2 + xpos, a / 2 + ypos, -a / 2 + zpos);
+	glVertex3f(a / 2 + xpos, a / 2 + ypos, a / 2 + zpos);
+	glEnd();
+	glBegin(GL_TRIANGLE_STRIP);
+	glColor3f(1.0f, 0.5f, 0.0f); // orange
+	glVertex3f(a / 2 + xpos, -a / 2 + ypos, -a / 2 + zpos);
+	glVertex3f(a / 2 + xpos, -a / 2 + ypos, a / 2 + zpos);
+	glVertex3f(-a / 2 + xpos, -a / 2 + ypos, -a / 2 + zpos);
+	glVertex3f(-a / 2 + xpos, -a / 2 + ypos, a / 2 + zpos);
+	glEnd();
 }
 
 // Keyboard ...
@@ -245,13 +299,13 @@ void processRegularKey(unsigned char key, int xx, int yy) {
 
 	case 'M':
 	case 'm':
-		angleZ++;
-		angleY--;
 		angleX++;
+		angleY--;
+		angleZ++;
 		
 		break;
-	case 'k':
 	case 'K':
+	case 'k':
 		objOpenGl_on = false;
 		tetraedo_on = false;
 		disco_on = false;
@@ -390,7 +444,40 @@ void render() {
 		}
 	}
 
-	casa1.Desenha(1);
+	
+
+	switch (value)
+	{
+	case 2:
+		cor("AMARELO");
+		cubo1.Desenha();
+		break;
+	case 3:
+		cor("AZUL");
+		disco1.Desenha();
+		break;
+	case 4:
+		cor("VERDE");
+		cone1.Desenha();
+		break;
+	case 5:
+		cor("VERMELHO");
+		tetrahedro1.Desenha();
+		break;
+	case 6:
+		casa1.Desenha(1);
+		break;
+	case 7:
+		cor("CIANO");
+		glutSolidTeapot(50.00);
+		break;
+	case 8:
+		cor("CIANO");
+		objLouco.Desenha();
+		break;
+	default:
+		break;
+	}
 
 	cor("AMARELO");
 	if (cubo_on) {
@@ -418,6 +505,45 @@ void render() {
 
 	glutSwapBuffers();  // Swap the front and back frame buffers (double buffering)
 }
+
+void update(int value) {
+	angleX += 1.0f;
+	if (angleX > 360) {
+		angleX -= 360;
+	}
+	glutPostRedisplay();
+	glutTimerFunc(25, update, 0);
+}
+
+void menu(int num) {
+	if (num == 0) {
+		glutDestroyWindow(window);
+		exit(0);        // Quit
+	}
+	else {
+		value = num;
+	}
+	glutPostRedisplay();
+}
+
+void createGLUTMenus() {
+	submenu_id = glutCreateMenu(menu);	// Sub-menu
+	glutAddMenuEntry("Cubo", 2);
+	glutAddMenuEntry("Disco", 3);
+	glutAddMenuEntry("Cone", 4);
+	glutAddMenuEntry("Tetrahedro", 5);
+	glutAddMenuEntry("Casa de Triangulos", 6);
+	glutAddMenuEntry("Objeto Glut", 7);
+	glutAddMenuEntry("Figura Louca", 8);
+
+	menu_id = glutCreateMenu(menu);		// Menu
+	glutAddMenuEntry("Limpar", 1);
+	glutAddSubMenu("Desenhar", submenu_id);
+	glutAddMenuEntry("Quit", 0);
+
+	glutAttachMenu(GLUT_MIDDLE_BUTTON);	// Botão do meio aciona o Menu
+}
+
 /* Main function: GLUT runs as a console application starting at main() */
 int main(int argc, char** argv) {
 	DisplayFileRead("pedro.txt");
@@ -431,6 +557,8 @@ int main(int argc, char** argv) {
 	glutSpecialFunc(processSpecialKeys);  // Register callback handler for arrow keys 
 	glutKeyboardFunc(processRegularKey);
 	glutMouseFunc(mouse);
+	//glutTimerFunc(25, update, 0);
+	createGLUTMenus();
 
 	initGL();                           // Our own OpenGL initialization
 
@@ -457,11 +585,7 @@ int main(int argc, char** argv) {
 	cout << "Teclado: tecla O desliga a iluminacao" << endl;
 	cout << "Teclado: tecla G liga e desliga o desenho do Grid" << endl;
 	cout << "Teclado: tecla R Objeto Glut" << endl;
-	cout << "Teclado: tecla T Cubo" << endl;
-	cout << "Teclado: tecla Y Cone" << endl;
-	cout << "Teclado: tecla U Disco" << endl;
-	cout << "Teclado: tecla I Tetrahedro" << endl;
-	cout << "Teclado: tecla K - Desliga Objeto" << endl;
+	cout << "Teclado: tecla M - Segure para ver a animação" << endl;
 
 	glutMainLoop();                 // Enter the infinite event-processing loop
 	return 0;

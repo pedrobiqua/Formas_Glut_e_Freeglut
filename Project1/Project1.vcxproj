@@ -220,6 +220,7 @@
     <ClCompile Include="Disco.cpp" />
     <ClCompile Include="Face4v.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ObjetoLouco.cpp" />
     <ClCompile Include="TetraHedro.cpp" />
     <ClCompile Include="Triangle.cpp" />
     <ClCompile Include="Vetor.cpp" />
@@ -230,6 +231,7 @@
     <ClInclude Include="Cubo.h" />
     <ClInclude Include="Disco.h" />
     <ClInclude Include="Face4v.h" />
+    <ClInclude Include="ObjetoLouco.h" />
     <ClInclude Include="TetraHedro.h" />
     <ClInclude Include="Triangle.h" />
     <ClInclude Include="Vetor.h" />
