@@ -1,4 +1,4 @@
-# Formas_Glut_e_Freeglut
+# Formas Glut e Freeglut
 
 Trabalho TDE feito pelos Estudantes:
 <br>
