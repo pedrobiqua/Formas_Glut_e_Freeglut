@@ -198,7 +198,7 @@ void processSpecialKeys(int key, int xx, int yy) {
 		angleZ++;
 		break;
 	case GLUT_KEY_END:
-		DisplayFileRead("pedro.txt");
+		DisplayFileRead("formas.txt");
 	}
 	setVisParam();
 	glutPostRedisplay();
@@ -405,7 +405,6 @@ void render() {
 	glRotatef(angleX, 1.0f, 0.0f, 0.0f);
 	glRotatef(angleY, 0.0f, 1.0f, 0.0f);
 	glRotatef(angleZ, 0.0f, 0.0f, 1.0f);
-	if (grid_on) grid();
 
 	for (int i = 1; i <= numObjects; i++) {
 		switch (ObjectList[i].id) {
@@ -445,6 +444,7 @@ void render() {
 	}
 
 	
+	if (grid_on) grid();
 
 	switch (value)
 	{
@@ -479,7 +479,8 @@ void render() {
 		break;
 	}
 
-	cor("AMARELO");
+
+	/*cor("AMARELO");
 	if (cubo_on) {
 		cubo1.Desenha();
 	}
@@ -499,7 +500,7 @@ void render() {
 	cor("CIANO");
 	if (objOpenGl_on) { 
 		glutSolidTeapot(50.00);
-	}
+	}*/
 
 	
 
@@ -539,14 +540,14 @@ void createGLUTMenus() {
 	menu_id = glutCreateMenu(menu);		// Menu
 	glutAddMenuEntry("Limpar", 1);
 	glutAddSubMenu("Desenhar", submenu_id);
-	glutAddMenuEntry("Quit", 0);
+	glutAddMenuEntry("Quit - Não clicar", 0);
 
 	glutAttachMenu(GLUT_MIDDLE_BUTTON);	// Botão do meio aciona o Menu
 }
 
 /* Main function: GLUT runs as a console application starting at main() */
 int main(int argc, char** argv) {
-	DisplayFileRead("pedro.txt");
+	DisplayFileRead("formas.txt");
 	glutInit(&argc, argv);             // Initialize GLUT
 	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGBA); // Define double buffered mode
 	glutInitWindowSize(640, 480);      // Set the window's initial width & height
@@ -579,6 +580,7 @@ int main(int argc, char** argv) {
 	cout << "Eixo Z em Azul" << endl;
 	cout << "Interacao:" << endl;
 	cout << "Mouse: botao esquerdo zoom in, direito zoom out" << endl;
+	cout << "Clicar no botao do scroll do mouse ativa as configurações de limpar, desenhar" << endl;
 	cout << "Teclado: setas rotacao da cena (eixos X e Y)" << endl;
 	cout << "Teclado: PgUp e PgDn rotacao da cena (eixo Z)" << endl;
 	cout << "Teclado: tecla L liga a iluminacao" << endl;
